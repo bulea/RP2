@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Zadaća 3</title>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js'> </script>
+    <script src='https://rp2.studenti.math.hr/~zbujanov/dz3/puzzle.js'> </script>
+  </head>
+  <body>
+
+    
+    <script type="text/javascript">
+
+    var select = $('<select name="tezina" id="tezina">');
+    $("body").append(select);
+    var i = 0;
+    while(puzzle[i])
+    {
+        select.append('<option value="' + i + '">' + puzzle[i].name + '</option>');
+        ++i;
+    }
+    select.append('</select>');
+    $("body").append(select);
+
+    $("body").append(' ');
+    var btn = $('<button type="submit">Započni igru!</button>');
+    $("body").append(btn);
+    $("body").append("<br>");
+    $("body").append("<br>");
+
+
+
+    $("button").on("click", function() {
+        $("table").html("");
+        $("p").html("");
+        $("div").html("");
+        var e = document.getElementById("tezina");
+        var game = e.options[e.selectedIndex].value; //koju igru je korisnik izabrao
+
+        var podaci = puzzle[game];
+        var velicina = podaci.size;
+
+        var tablica = $('<table>');
+        for(var i = 1; i <= velicina; ++i)
+        {
+            tablica.append('<tr>');
+            for(var j = 1; j <= velicina; ++j)
+            {
+                tablica.append('<td class="polje" id="polje' + i + j + '"></td>');
+            }
+            tablica.append('</tr>');
+        }
+        tablica.append('</table>');
+        $("body").append(tablica);
+        $("td").css("border", "2px solid black").css("width", "50px").css("height", "50px");
+
+        var i = 0;
+        var boje = podaci.color;
+        while(boje[i])
+        {
+            $('#polje' + podaci.A_row[i] + podaci.A_col[i] + '').css("background", boje[i])
+                                                                .html("*")
+                                                                .css("font-size", "25px")
+                                                                .css("text-align", "center")
+                                                                .css("vertical-align", "middle");
+            $("#polje" + podaci.B_row[i] + podaci.B_col[i] + "").css("background", boje[i])
+                                                                .html("*")
+                                                                .css("font-size", "25px")
+                                                                .css("text-align", "center")
+                                                                .css("vertical-align", "middle");
+
+            ++i;
+        }
+        
+        var tekst = $("<div>");
+        tekst.append($('<p>Odaberi boju za igranje: </p>').css("margin", "0").css("padding", "0"));
+
+        tekst.append('<form id="boje">');
+
+        i = 0;
+        tekst.append('<input type="radio" name="color" value="' + i + '" id="color" checked="checked">' + boje[i]);
+        ++i;
+        while(boje[i])
+        {
+            tekst.append('<input type="radio" name="color" value="' + i + '" id="color">' + boje[i]);
+            ++i;
+        }
+        tekst.append('</form>');
+        tekst.append("</div");
+        $("body").append(tekst);
+
+
+        $(".polje").on("contextmenu", function() {return false;});
+
+        $(".polje").on("mousedown", function(event) {
+            var izabrana_boja = $("input:radio[name=color]:checked").val() //koju boju je korisnik izabrao
+            var element = event.target.id;
+
+            i = 0;
+            var raditi = 1;
+            while(boje[i])
+            {
+                var novi_id = "polje" + podaci.A_row[i] + podaci.A_col[i];
+                if(element === novi_id)
+                {
+                    raditi = 0;
+                }
+                novi_id = "polje" + podaci.B_row[i] + podaci.B_col[i];
+                if(element === novi_id)
+                {
+                    raditi = 0;
+                }
+                ++i;
+            }
+
+            if(raditi === 1)
+            {
+                if(event.button === 0 && ($('#' + element).css("background").startsWith("rgba(0, 0, 0, 0)")) 
+                                      || $('#' + element).css("background").startsWith("rgb(255, 255, 255)")) //lijevi klik
+                {
+                    $('#' + element).css("background", boje[izabrana_boja]);
+                }
+                else if(event.button === 2) //desni klik
+                {
+                    $('#' + element).css("background", "white");
+                }
+            }
+
+            
+
+        });
+
+        
+
+    });
+
+
+
+    </script>
+
+
+  </body>
+</html>
